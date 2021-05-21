@@ -46,12 +46,18 @@ module.exports.validateRegisterInput = (
 };
 
 module.exports.validateLoginInput = (username, password) => {
-  var errors = "";
+  var errors = [];
   if (username.trim() === "") {
-    errors += "Tên người dùng không được để trống,username,";
+    var error={};
+    error.message="Tên người dùng không được để trống";
+    error.field="username"
+    errors.push(error)
   }
   if (password.trim() === "") {
-    errors += "Mật khẩu không được để trống,password";
+    var error={};
+    error.message="Mật khẩu không được để trống";
+    error.field="password"
+    errors.push(error)
   }
 
   return {

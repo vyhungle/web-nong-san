@@ -2,7 +2,10 @@ const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../../config");
 const User = require("../../models/User");
 const bcrypt = require("bcryptjs");
-const { validateRegisterInput } = require("../../util/validators");
+const {
+  validateRegisterInput,
+  validateLoginInput,
+} = require("../../util/validators");
 
 function generateToken(user) {
   return jwt.sign(
@@ -49,24 +52,61 @@ module.exports = {
         (error.field = "username"),
           (error.message = "Tên người dùng này đã được sử dụng");
         respone.error.push(error);
+      } else {
+        if (!valid) {
+          errors.map((e) => {
+            respone.error.push(e);
+          });
+        } else {
+          password = await bcrypt.hash(password, 12);
+          const newUser = new User({
+            email,
+            username,
+            password,
+            confirmPassword,
+            createdAt: new Date().toISOString(),
+          });
+
+          const res = await newUser.save();
+          const token = generateToken(res);
+          respone.user = { ...res._doc, id: res.id, token };
+        }
+      }
+      return respone;
+    },
+
+    async login(_, { username, password }) {
+      const { valid, errors } = validateLoginInput(username, password);
+      const respone = {
+        error: [],
+        user: null,
+      };
+      const user = await User.findOne({ username: username });
+      if (!user) {
+        respone.error.push({
+          message: "Không tìm thấy người dùng",
+          field: "username",
+        });
         if (!valid) {
           errors.map((e) => {
             respone.error.push(e);
           });
         }
       } else {
-        password = await bcrypt.hash(password, 12);
-        const newUser = new User({
-          email,
-          username,
-          password,
-          confirmPassword,
-          createdAt: new Date().toISOString(),
-        });
-
-        const res = await newUser.save();
-        const token = generateToken(res);
-        respone.user = { ...res._doc, id: res.id, token };
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+          respone.error.push({
+            message: "Thông tin đăng nhập sai",
+            field: "password",
+          });
+        } else {
+          const token = generateToken(user);
+          respone.user = {
+            ...user._doc,
+            id: user._id,
+            token,
+          };
+        }
       }
       return respone;
     },

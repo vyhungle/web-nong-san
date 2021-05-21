@@ -27,6 +27,7 @@ module.exports = gql `
   type Product{
     id:ID!
     name:String!
+    image:String!
     price:String!
     producer:Producer!
     type:ProductType!
@@ -70,10 +71,12 @@ module.exports = gql `
 
   type Query {
     getUsers:[User]
+    getProducts:[Product]
   }
 
   type Mutation {
     register(registerInput: RegisterInput): UserResponse!
+    login(username:String!,password:String!):UserResponse!
   }
  
 `;
