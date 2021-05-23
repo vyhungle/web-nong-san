@@ -20,3 +20,21 @@ export const GET_PRODUCTS = gql`
     }
   }
 `;
+
+export const GET_MY_BILLS = gql`
+ query getMyBills{
+  getMyBills{
+    id
+    user{
+      username
+    }
+    date
+    cargoTicket{
+      number
+      product{
+        name
+      }
+    }
+  }
+}
+`;

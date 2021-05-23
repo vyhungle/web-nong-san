@@ -46,3 +46,9 @@ export const REGISTER = gql`
     }
   }
 `;
+
+export const CREATE_BILL = gql`
+  mutation createBill($ticket: [InCargoTicket], $pay: String) {
+    createBill(ticket: $ticket, pay: $pay)
+  }
+`;

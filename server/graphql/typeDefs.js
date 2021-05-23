@@ -1,6 +1,6 @@
 const { gql } = require("apollo-server");
 
-module.exports = gql `
+module.exports = gql`
 
   type User {
     id: ID
@@ -41,9 +41,17 @@ module.exports = gql `
     id:ID!
     name:String!
   }
-  type Warehouse{
-    id:ID!
-    products:[Product]
+
+
+  input InCargo{
+    id:String!
+    price:String!
+    name: String!,
+    image: String!,
+  }
+  input InCargoTicket{
+    number:String!
+    product:InCargo!
   }
 
 
@@ -54,8 +62,13 @@ module.exports = gql `
     date:String!
     user:User!
     pay:Payment!
-
+    cargoTicket:[CargoTicket]!
   }
+  type CargoTicket{
+   number:String!,
+   product:Product,
+  }
+
   type Payment{
     id:ID!
     name:String!
@@ -72,13 +85,14 @@ module.exports = gql `
   type Query {
     getUsers:[User]
     getProducts:[Product]
+    getMyBills:[Bill]
+    
   }
 
   type Mutation {
     register(registerInput: RegisterInput): UserResponse!
     login(username:String!,password:String!):UserResponse!
+    createBill(ticket:[InCargoTicket],pay:String):Boolean!
   }
  
 `;
-
-

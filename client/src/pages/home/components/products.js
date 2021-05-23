@@ -9,6 +9,35 @@ export default function Products() {
     GET_PRODUCTS,
     { pollInterval: 500 }
   );
+
+  const AddProduct = (product) => {
+    var cartProduct = {};
+    var products = [];
+    if (localStorage.getItem("product") === null) {
+      var p = {};
+      p.product = product;
+      p.number = 1;
+      products.push(p);
+      cartProduct.products = products;
+    } else {
+      var values = JSON.parse(localStorage.getItem("product"));
+      var flag = true;
+      values.products.map((p) => {
+        if (p.product.id === product.id) {
+          p.number++;
+          flag = false;
+        }
+      });
+      if (flag === true) {
+        var p = {};
+        p.product = product;
+        p.number = 1;
+        values.products.push(p);
+      }
+      cartProduct = values;
+    }
+    localStorage.setItem("product", JSON.stringify(cartProduct));
+  };
   return (
     <Container>
       {products &&
@@ -19,7 +48,7 @@ export default function Products() {
               <p>{product.name}</p>
               <p>{product.producer.name}</p>
               <p>{product.price}</p>
-              <ButtonBuy>Mua</ButtonBuy>
+              <ButtonBuy onClick={() => AddProduct(product)}>Mua</ButtonBuy>
             </CardBody>
           </CardItem>
         ))}
@@ -28,6 +57,7 @@ export default function Products() {
 }
 
 const Container = styled.div`
+  margin-top: 20px;
   width: 80%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -39,6 +69,7 @@ const CardItem = styled.div`
   height: 400px;
   border: 1px solid gainsboro;
   border-radius: 20px;
+  background-color: white;
 `;
 
 const Image = styled.img`
@@ -68,7 +99,7 @@ const ButtonBuy = styled.button`
   top: -15px;
   color: white;
   font-weight: 700;
-  :hover{
+  :hover {
     background-color: #007873;
   }
 `;

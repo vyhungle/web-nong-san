@@ -24,10 +24,18 @@ function MenuBar() {
 
       <Menu.Menu position="right">
         <Menu.Item
-          active={activeItem === "a"}
+          active={activeItem === "bill"}
           onClick={handleItemClick}
           as={Link}
-          to="/"
+          to="/bill"
+        >
+          Đơn đã đặt
+        </Menu.Item>
+        <Menu.Item
+          active={activeItem === "cart"}
+          onClick={handleItemClick}
+          as={Link}
+          to="/cart"
         >
           Giỏ hàng
         </Menu.Item>
@@ -56,7 +64,7 @@ function MenuBar() {
       </Menu.Menu>
     </Menu>
   );
-  return menuBar;
+  return <div style={{ background: "white" }}>{menuBar}</div>;
 }
 
 export default MenuBar;

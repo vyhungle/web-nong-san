@@ -22,6 +22,8 @@ const Container = styled.div`
   justify-content: center;
   /* background-color: #1da1f3; */
   margin: 0;
+  background-color: white;
+  height: 100vh;
 `;
 const BoxContainer = styled.div`
   /* width: 400px;
