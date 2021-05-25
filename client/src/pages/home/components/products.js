@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { GET_PRODUCTS } from "../../../graphql/query";
 
+
 export default function Products() {
   const { loading, data: { getProducts: products } = {} } = useQuery(
     GET_PRODUCTS,
@@ -45,9 +46,9 @@ export default function Products() {
           <CardItem key={index}>
             <Image src={product.image} />
             <CardBody>
-              <p>{product.name}</p>
-              <p>{product.producer.name}</p>
-              <p>{product.price}</p>
+              <p style={{whiteSpace:"nowrap",overflow:"hidden"}}>{product.name}</p>
+              <p style={{whiteSpace:"nowrap",overflow:"hidden"}}>{product.producer.name}</p>
+              <p>{product.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')} vnđ</p>
               <ButtonBuy onClick={() => AddProduct(product)}>Mua</ButtonBuy>
             </CardBody>
           </CardItem>

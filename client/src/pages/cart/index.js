@@ -5,11 +5,16 @@ import { Form, Formik } from "formik";
 
 import TopBar from "../../components/topBar";
 import { CREATE_BILL } from "../../graphql/mutation";
+import ButtonDelete from "./components/buttonDelete";
 
 export default function Index() {
   const [createBill] = useMutation(CREATE_BILL);
   var values = JSON.parse(localStorage.getItem("product"));
-  var products = values !== null ? values.products : [];
+  var ref = values !== null ? values.products : [];
+  const [products,setProducts]=React.useState(ref)
+  const productsChange=(value)=>{
+    setProducts(value);
+  }
   const Total = (products) => {
     var total = 0;
     products.map((p) => {
@@ -46,13 +51,26 @@ export default function Index() {
               <Item key={index}>
                 <img src={p.product.image} />
                 <p>{p.product.name}</p>
-                <p>giá: {p.product.price} vnđ</p>
+                <p>
+                  giá:{" "}
+                  {p.product.price
+                    .toString()
+                    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}{" "}
+                  vnđ
+                </p>
                 <p>số lượng: {p.number}</p>
+                <ButtonDelete id={p.product.id} productsChange={productsChange}/>
               </Item>
             ))}
         </Container>
         <BoxTotal>
-          <p>total: {Total(products)} vnđ</p>
+          <p>
+            total:{" "}
+            {Total(products)
+              .toString()
+              .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}{" "}
+            vnđ
+          </p>
           <Formik
             initialValues={{
               pay: "Thanh toán tại nhà",
@@ -68,6 +86,7 @@ export default function Index() {
                 },
               });
               localStorage.removeItem("product");
+              setProducts([])
             }}
           >
             {(formProps) => (
@@ -96,20 +115,21 @@ const BoxContainer = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
- 
-   
 `;
 const Container = styled.div`
   width: 80%;
   background-color: white;
   margin-top: 20px;
-  padding: 10px;
+  /* padding: 10px; */
+  border: solid 0.75px gainsboro;
 `;
 const Item = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 10px;
+  padding: 10px;
+  margin: 5px;
+  border-bottom: solid 0.5px gainsboro;
 
   > img {
     width: 80px;
@@ -124,30 +144,30 @@ const Item = styled.div`
 `;
 
 const BoxTotal = styled.div`
-padding: 10px;
+  border: solid 0.75px gainsboro;
+  padding: 10px;
   background-color: white;
   height: 100px;
   width: 80%;
   margin-top: 10px;
-  >p{
+  > p {
     font-weight: 700;
   }
 `;
 
-const Select=styled.select `
+const Select = styled.select`
   width: 200px;
   height: 44px;
   border-radius: 10px;
   outline: none;
-  
-`
+`;
 
-const Button =styled.button `
+const Button = styled.button`
   height: 44px;
   margin-left: 5px;
   border-radius: 10px;
-  border:solid .5px gainsboro;
-  background-color: #00B5AD;
+  border: solid 0.5px gainsboro;
+  background-color: #00b5ad;
   color: white;
   font-weight: 700;
-`
+`;
